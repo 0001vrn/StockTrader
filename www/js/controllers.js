@@ -41,16 +41,38 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
+.controller('PlaylistsCtrl', function($scope,$http) {
+  
+  $scope.count=5;
+  $http.get("http://193.34.144.236:107/api/country")
+    .success(function(response) {$scope.names = response.records;});
+	
+	$scope.plusone = function(){
+	$scope.count+=1;
+	};
+	
+	$scope.minusone = function(){
+	if($scope.count>0)
+	$scope.count-=1;
+	else
+	alert("Hold it there bru");
+	};
+	
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
-});
+})
+
+.controller('newsCtrl',['$scope','FeedService', function($scope,Feed) {
+ 
+    //$scope.loadButonText="Load";
+    $scope.loadFeed=function(e){        
+        Feed.parseFeed($scope.feedSrc).then(function(res){
+            $scope.loadButonText=angular.element(e.target).text();
+            $scope.feeds=res.data.responseData.feed.entries;
+        });
+    }
+           
+
+}]);
+
